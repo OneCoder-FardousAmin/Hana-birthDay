@@ -1,0 +1,875 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>بطاقة عيد ميلاد ثلاثية الأبعاد - هنا عمرو صلاح</title>
+  
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&family=Reem+Kufi:wght@700&family=Fredoka:wght@600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <style>
+    :root {
+      --primary-pink: #ff007f;
+      --primary-purple: #7928ca;
+      --gold-accent: #ffd700;
+    }
+
+    body {
+      min-height: 100vh;
+      background: radial-gradient(circle at center, #1e0936 0%, #0a0212 100%);
+      font-family: 'Cairo', sans-serif;
+      overflow-x: hidden;
+      perspective: 1200px;
+      color: #fff;
+      user-select: none;
+    }
+
+    .bg-orb {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(100px);
+      opacity: 0.55;
+      animation: floatOrb 10s infinite alternate ease-in-out;
+      pointer-events: none;
+    }
+    .orb-1 { width: 420px; height: 420px; background: #ff007f; top: 5%; left: 10%; }
+    .orb-2 { width: 380px; height: 380px; background: #7928ca; bottom: 5%; right: 10%; animation-delay: -5s; }
+    .orb-3 { width: 300px; height: 300px; background: #00dfd8; top: 45%; left: 45%; animation-delay: -2.5s; }
+
+    @keyframes floatOrb {
+      0% { transform: translateY(-30px) scale(1); }
+      100% { transform: translateY(30px) scale(1.15); }
+    }
+
+    #confetti-canvas, #balloon-canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 10;
+    }
+
+    #balloon-canvas {
+      pointer-events: auto; /* Allows popping balloons! */
+      z-index: 12;
+    }
+
+    .card-scene {
+      perspective: 1000px;
+      z-index: 20;
+    }
+
+    .card-3d {
+      background: rgba(255, 255, 255, 0.08);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      border-radius: 36px;
+      box-shadow: 
+        0 30px 60px rgba(0, 0, 0, 0.7),
+        0 0 40px rgba(255, 0, 127, 0.3),
+        inset 0 0 20px rgba(255, 255, 255, 0.15);
+      transform-style: preserve-3d;
+      transition: transform 0.15s ease-out, box-shadow 0.3s ease;
+    }
+
+    .card-3d:hover {
+      box-shadow: 
+        0 40px 80px rgba(0, 0, 0, 0.8),
+        0 0 60px rgba(255, 0, 127, 0.5),
+        inset 0 0 30px rgba(255, 255, 255, 0.25);
+    }
+
+    .float-element {
+      position: absolute;
+      pointer-events: none;
+      transform: translateZ(50px);
+      animation: floatMotion 4s ease-in-out infinite alternate;
+      filter: drop-shadow(0 12px 18px rgba(0,0,0,0.5));
+    }
+    .fe-1 { top: -28px; right: -20px; font-size: 3.2rem; animation-delay: 0s; }
+    .fe-2 { bottom: -28px; left: -20px; font-size: 3.2rem; animation-delay: -1.5s; }
+    .fe-3 { top: 35%; left: -35px; font-size: 2.8rem; animation-delay: -3s; }
+    .fe-4 { top: 20%; right: -35px; font-size: 2.8rem; animation-delay: -2s; }
+
+    @keyframes floatMotion {
+      0% { transform: translateZ(50px) translateY(0) rotate(0deg); }
+      100% { transform: translateZ(80px) translateY(-22px) rotate(15deg); }
+    }
+
+    .gradient-text-gold {
+      background: linear-gradient(135deg, #ffffff 0%, #ffd700 50%, #ff8da1 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      font-family: 'Reem Kufi', sans-serif;
+    }
+
+    .dedication-badge {
+      background: rgba(255, 215, 0, 0.12);
+      border: 1px dashed rgba(255, 215, 0, 0.6);
+      backdrop-filter: blur(8px);
+    }
+
+    /* Custom Buttons Styling */
+    .btn-action {
+      position: relative;
+      transform-style: preserve-3d;
+      transition: all 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+    .btn-action:hover {
+      transform: translateZ(60px) translateY(-3px) scale(1.02);
+    }
+    .btn-action:active {
+      transform: translateZ(30px) translateY(2px) scale(0.98);
+    }
+
+    .princess-modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(10, 2, 18, 0.82);
+      backdrop-filter: blur(12px);
+      z-index: 100;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.4s ease;
+    }
+
+    .princess-modal-overlay.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .speech-bubble {
+      position: relative;
+      background: linear-gradient(135deg, #ffffff, #fff0f6);
+      color: #7928ca;
+      border-radius: 24px;
+      padding: 18px 28px;
+      font-family: 'Fredoka', 'Cairo', sans-serif;
+      font-weight: 700;
+      font-size: 1.6rem;
+      box-shadow: 0 15px 35px rgba(255, 0, 127, 0.4);
+      border: 3px solid #ff007f;
+      animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    .speech-bubble::after {
+      content: '';
+      position: absolute;
+      bottom: -20px;
+      left: 50%;
+      transform: translateX(-50%);
+      border-width: 20px 15px 0 15px;
+      border-style: solid;
+      border-color: #ff007f transparent transparent transparent;
+    }
+
+    /* 200 EGP Bill Flying Animation */
+    .cash-bill {
+      position: fixed;
+      z-index: 150;
+      pointer-events: none;
+      width: 140px;
+      height: 70px;
+      background: linear-gradient(135deg, #10b981 0%, #059669 50%, #047857 100%);
+      border: 2px solid #a7f3d0;
+      border-radius: 8px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5), 0 0 15px rgba(16, 185, 129, 0.6);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 6px 10px;
+      color: #ffffff;
+      font-weight: 900;
+      animation: flyCashOut 2.5s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+    }
+
+    @keyframes flyCashOut {
+      0% {
+        opacity: 1;
+        transform: translate(0, 0) scale(0.3) rotate(0deg);
+      }
+      50% {
+        opacity: 1;
+        transform: translate(var(--tx), var(--ty)) scale(1.1) rotate(var(--rot));
+      }
+      100% {
+        opacity: 0;
+        transform: translate(var(--tx), calc(var(--ty) + 150px)) scale(0.8) rotate(calc(var(--rot) + 180deg));
+      }
+    }
+
+    /* Interactive Gift Box Glow & Cursor */
+    .interactive-gift-box {
+      cursor: pointer;
+      transition: all 0.3s ease;
+      animation: giftPulse 1.5s infinite alternate ease-in-out;
+    }
+    .interactive-gift-box:hover {
+      transform: scale(1.12) rotate(-3deg);
+      filter: drop-shadow(0 0 35px #ffd700) drop-shadow(0 0 50px #ff007f);
+    }
+
+    @keyframes giftPulse {
+      0% { filter: drop-shadow(0 0 12px rgba(255,215,0,0.8)); transform: scale(1); }
+      100% { filter: drop-shadow(0 0 28px rgba(255,215,0,1)) drop-shadow(0 0 45px rgba(255,0,127,0.9)); transform: scale(1.05); }
+    }
+
+    .princess-card-box {
+      transform: scale(0.8) translateY(50px);
+      transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+    .princess-modal-overlay.active .princess-card-box {
+      transform: scale(1) translateY(0);
+    }
+
+    /* Glow pulse animation for gift box */
+    .gift-glow {
+      animation: giftPulse 2s infinite alternate;
+    }
+
+    @keyframes giftPulse {
+      0% { filter: drop-shadow(0 0 10px rgba(255,215,0,0.6)); }
+      100% { filter: drop-shadow(0 0 30px rgba(255,215,0,1)) drop-shadow(0 0 50px rgba(255,0,127,0.8)); }
+    }
+  </style>
+</head>
+<body class="flex items-center justify-center min-h-screen p-4 sm:p-6">
+
+  <div class="bg-orb orb-1"></div>
+  <div class="bg-orb orb-2"></div>
+  <div class="bg-orb orb-3"></div>
+
+  <canvas id="confetti-canvas"></canvas>
+  <canvas id="balloon-canvas"></canvas>
+
+  <div class="card-scene w-full max-w-lg">
+    <div id="mainCard" class="card-3d relative p-6 sm:p-10 text-center cursor-pointer my-4">
+      
+      <!-- Decorative 3D Floating Icons -->
+      <div class="float-element fe-1">🎈</div>
+      <div class="float-element fe-2">🎁</div>
+      <div class="float-element fe-3">👑</div>
+      <div class="float-element fe-4">✨</div>
+
+      <!-- Top Celebration Tag -->
+      <div style="transform: translateZ(40px);" class="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-gradient-to-r from-pink-600 to-purple-600 text-white font-bold text-sm sm:text-base shadow-lg mb-6 border border-pink-300/30">
+        <span>🎂</span>
+        <span>احتفالاً بعيد الميلاد السعيد</span>
+        <span>🎉</span>
+      </div>
+
+      <!-- Birthday Person Name -->
+      <h1 style="transform: translateZ(65px);" class="text-4xl sm:text-6xl font-black gradient-text-gold mb-3 tracking-wide drop-shadow-md">
+        هنا عمرو صلاح
+      </h1>
+
+      <!-- Heartfelt Greeting Message -->
+      <p style="transform: translateZ(45px);" class="text-gray-200 text-base sm:text-lg leading-relaxed mb-6 font-medium">
+        كل عام وأنتِ بقلب أبيض وروح زاهية بالجمال! ✨<br>
+        عُقبال مليون سنة ملونة بالحُب، السعادة، والنجاح الدائم 💕
+      </p>
+
+      <!-- Dedication From Aunt Firdous -->
+      <div style="transform: translateZ(50px);" class="dedication-badge p-4 rounded-2xl mb-8 text-amber-300 font-bold text-base sm:text-lg shadow-inner flex items-center justify-center gap-2">
+        <span class="text-2xl">💝</span>
+        <span>إهداء خاص من خالتكِ: <strong class="text-white text-xl underline decoration-pink-500 decoration-wavy underline-offset-4">فردوس أمين</strong></span>
+      </div>
+
+      <div style="transform: translateZ(55px);" class="flex flex-col gap-3 sm:gap-4">
+        
+        <!-- Button 1: YouTube Birthday Playlist -->
+        <a href="https://www.youtube.com/playlist?list=PLy_VZPMU2nI3gp4n9jkLLcoPSqK9fnSkh" target="_blank" rel="noopener noreferrer" 
+           class="btn-action w-full bg-gradient-to-r from-red-600 to-red-700 hover:from-red-500 hover:to-red-600 text-white font-bold py-3.5 px-6 rounded-2xl shadow-lg shadow-red-900/40 border border-red-400/30 flex items-center justify-center gap-3 text-base sm:text-lg">
+          <i class="fab fa-youtube text-2xl text-white"></i>
+          <span>قائمة أغاني عيد الميلاد على YouTube</span>
+          <i class="fas fa-external-link-alt text-sm opacity-80 mr-auto"></i>
+        </a>
+
+        <!-- Button 2: Increase Balloons & Confetti -->
+        <button id="btnMoreFun" 
+                class="btn-action w-full bg-gradient-to-r from-pink-500 via-purple-600 to-indigo-600 hover:from-pink-400 hover:to-indigo-500 text-white font-bold py-3.5 px-6 rounded-2xl shadow-lg shadow-pink-900/40 border border-pink-300/30 flex items-center justify-center gap-3 text-base sm:text-lg">
+          <span class="text-2xl">🎈</span>
+          <span>إطلاق المزيد من البلالين والقصاصات!</span>
+          <span class="bg-white/20 text-xs px-2.5 py-1 rounded-full text-pink-100 font-extrabold mr-auto">+مفاجأة</span>
+        </button>
+
+        <!-- Button 3: Princess Surprise Modal Trigger -->
+        <button id="btnPrincessSurprise" 
+                class="btn-action w-full bg-gradient-to-r from-pink-500 via-rose-500 to-purple-600 hover:from-pink-400 hover:to-purple-500 text-white font-black py-4 px-6 rounded-2xl shadow-xl shadow-pink-500/30 border-2 border-pink-300/50 flex items-center justify-center gap-3 text-base sm:text-lg">
+          <span class="text-2xl">👑👸</span>
+          <span>مفاجأة الأميرة الجذابة!</span>
+          <span class="animate-bounce text-xl mr-auto">🎁</span>
+        </button>
+
+      </div>
+
+    </div>
+  </div>
+
+  <div id="princessModal" class="princess-modal-overlay p-4">
+    <div class="princess-card-box relative max-w-md w-full bg-gradient-to-b from-slate-900/95 via-purple-950/95 to-pink-950/95 border-2 border-pink-400/60 rounded-3xl p-6 sm:p-8 text-center shadow-2xl flex flex-col items-center">
+      
+      <!-- Close Button -->
+      <button id="btnClosePrincess" class="absolute top-4 left-4 w-10 h-10 bg-white/10 hover:bg-white/20 text-white rounded-full flex items-center justify-center text-lg transition border border-white/20">
+        <i class="fas fa-times"></i>
+      </button>
+
+      <!-- Animated Speech Bubble -->
+      <div id="princessSpeech" class="speech-bubble mb-6 text-center max-w-xs text-purple-900 border-pink-500 shadow-pink-400/50">
+        ✨ اضغطي على الهدية لفتح المفاجأة! 🎁✨
+      </div>
+
+      <!-- Glamorous Princess SVG Graphic -->
+      <div class="relative w-64 h-64 mb-4 flex items-center justify-center">
+        
+        <!-- Magic Sparkle & Aura Rings -->
+        <div class="absolute inset-0 rounded-full border-2 border-dashed border-pink-300/60 animate-spin" style="animation-duration: 15s;"></div>
+        <div class="absolute inset-3 rounded-full border border-amber-300/40 animate-ping" style="animation-duration: 4s;"></div>
+
+        <!-- SVG Glamorous Princess Illustration -->
+        <svg class="w-full h-full drop-shadow-2xl overflow-visible" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+          
+          <!-- Sparkling Halo Aura -->
+          <circle cx="100" cy="100" r="85" fill="url(#princessAura)" opacity="0.4" />
+
+          <!-- Glamorous Ball Gown Layers -->
+          <path d="M40 185 Q30 115 70 85 Q130 85 160 185 Z" fill="url(#dressGradientMain)"/>
+          <path d="M55 185 C55 125, 80 100, 100 100 C120 100, 145 125, 145 185 Z" fill="url(#dressGradientInner)" />
+          <path d="M72 185 C75 130, 100 115, 100 115 C100 115, 125 130, 128 185 Z" fill="#fff0f5" opacity="0.85"/>
+
+          <!-- Gown Sparkles & Lace Trim -->
+          <path d="M60 140 Q100 155 140 140" stroke="#ffd700" stroke-width="2" fill="none" stroke-dasharray="4 4"/>
+          <path d="M50 165 Q100 180 150 165" stroke="#ffd700" stroke-width="2" fill="none" stroke-dasharray="4 4"/>
+
+          <!-- Neck, Shoulders & Corset -->
+          <path d="M82 85 L118 85 L112 105 L88 105 Z" fill="#ffb6c1" stroke="#ff1493" stroke-width="1.5"/>
+          <circle cx="100" cy="68" r="22" fill="#ffe0d6" /> <!-- Soft Face -->
+
+          <!-- Gorgeous Flowing Golden Wavy Hair -->
+          <path d="M75 60 C65 25, 135 25, 125 60 Z" fill="#ffd700" /> <!-- Hair Top -->
+          <path d="M76 52 C55 70, 50 110, 68 145 C73 120, 72 85, 80 65 Z" fill="#fbc531" /> <!-- Left Wavy Locks -->
+          <path d="M124 52 C145 70, 150 110, 132 145 C127 120, 128 85, 120 65 Z" fill="#fbc531" /> <!-- Right Wavy Locks -->
+          <path d="M66 110 Q55 135 70 155" stroke="#ffeaa7" stroke-width="4" stroke-linecap="round" fill="none"/>
+          <path d="M134 110 Q145 135 130 155" stroke="#ffeaa7" stroke-width="4" stroke-linecap="round" fill="none"/>
+
+          <!-- Charming Crown / Royal Tiara with Jewels -->
+          <path d="M84 48 L90 32 L100 42 L110 32 L116 48 Z" fill="url(#goldTiaraGrad)" stroke="#ffb703" stroke-width="1.5"/>
+          <circle cx="90" cy="32" r="3" fill="#ff007f"/>
+          <circle cx="100" cy="40" r="3.5" fill="#00e5ff"/>
+          <circle cx="110" cy="32" r="3" fill="#ff007f"/>
+
+          <!-- Beautiful Facial Features -->
+          <circle cx="92" cy="68" r="2.5" fill="#2d3436"/>
+          <circle cx="108" cy="68" r="2.5" fill="#2d3436"/>
+          <!-- Eyelashes -->
+          <path d="M89 65 Q92 62 95 65" stroke="#2d3436" stroke-width="1.2" fill="none"/>
+          <path d="M105 Q108 62 111 65" stroke="#2d3436" stroke-width="1.2" fill="none"/>
+          <!-- Glossy Cute Smile & Cheeks -->
+          <path d="M95 75 Q100 80 105 75" stroke="#e84118" stroke-width="2.2" stroke-linecap="round" fill="none"/>
+          <circle cx="88" cy="73" r="3.5" fill="#ff7675" opacity="0.6"/>
+          <circle cx="112" cy="73" r="3.5" fill="#ff7675" opacity="0.6"/>
+
+          <!-- Elegant Arms holding the Gift Box -->
+          <path d="M75 92 Q88 115 100 115 Q112 115 125 92" stroke="#ffe0d6" stroke-width="7" stroke-linecap="round" fill="none"/>
+
+          <!-- Interactive Glowing Gift Box (200 EGP Trigger) -->
+          <g id="interactiveGiftBox" class="interactive-gift-box" transform="translate(70, 102)">
+            <rect x="0" y="10" width="60" height="48" rx="8" fill="url(#giftBoxGrad)" stroke="#ffd700" stroke-width="2.5"/>
+            <rect x="-4" y="4" width="68" height="14" rx="4" fill="#ff4757" stroke="#ffd700" stroke-width="2"/>
+            <!-- Golden Ribbons -->
+            <rect x="25" y="4" width="10" height="54" fill="#ffd700"/>
+            <rect x="0" y="26" width="60" height="10" fill="#ffd700"/>
+            <!-- Big Golden Bow -->
+            <path d="M15 -3 C12 -15, 30 -15, 30 4 Z" fill="#ffd700"/>
+            <path d="M45 -3 C48 -15, 30 -15, 30 4 Z" fill="#ffd700"/>
+            <circle cx="30" cy="4" r="5" fill="#ffffff" stroke="#ffaa00" stroke-width="1.5"/>
+            
+            <!-- Gift Label Tag on Box -->
+            <rect x="12" y="38" width="36" height="16" rx="4" fill="#10b981" stroke="#ffffff" stroke-width="1"/>
+            <text x="30" y="50" fill="#ffffff" font-size="10" font-weight="900" text-anchor="middle" font-family="'Cairo', sans-serif">🎁</text>
+          </g>
+
+          <!-- Floating Magic Sparkles -->
+          <text x="25" y="50" fill="#ffd700" font-size="16" class="animate-pulse">✨</text>
+          <text x="160" y="70" fill="#ff007f" font-size="18" class="animate-bounce">💖</text>
+          <text x="35" y="130" fill="#00dfd8" font-size="14">✨</text>
+          <text x="150" y="140" fill="#ffd700" font-size="16">💵</text>
+
+          <!-- SVG Color Gradients Definition -->
+          <defs>
+            <radialGradient id="princessAura" cx="50%" cy="50%" r="50%">
+              <stop offset="0%" stop-color="#ff007f"/>
+              <stop offset="70%" stop-color="#ffd700"/>
+              <stop offset="100%" stop-color="#7928ca" stop-opacity="0"/>
+            </radialGradient>
+            <linearGradient id="dressGradientMain" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stop-color="#ff007f"/>
+              <stop offset="50%" stop-color="#d63031"/>
+              <stop offset="100%" stop-color="#6c5ce7"/>
+            </linearGradient>
+            <linearGradient id="dressGradientInner" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#fd79a8"/>
+              <stop offset="100%" stop-color="#e84393"/>
+            </linearGradient>
+            <linearGradient id="goldTiaraGrad" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stop-color="#fff200"/>
+              <stop offset="100%" stop-color="#ff9f1a"/>
+            </linearGradient>
+            <linearGradient id="giftBoxGrad" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stop-color="#ff4757"/>
+              <stop offset="100%" stop-color="#ff6b81"/>
+            </linearGradient>
+          </defs>
+        </svg>
+
+      </div>
+
+      <!-- Princess Voice Button & Text -->
+      <div class="space-y-3 w-full">
+        <!-- Cash Counter Banner -->
+        <div id="cashBanner" class="hidden bg-gradient-to-r from-emerald-600 via-teal-600 to-green-600 text-white p-3 rounded-2xl shadow-lg border border-emerald-300 animate-bounce">
+          <p class="font-black text-lg sm:text-xl">
+            🎉 مبروك يا هَنا! طلعت ليكي عيدية 400 جنيه مصري! 💵✨
+            🎉 مبروك يا مكه! طلعت ليكي عيدية 200 جنيه مصري! 💵✨
+              🎉 مبروك يا منه! طلعت ليكي عيدية 200 جنيه مصري! 💵✨
+
+          </p>
+        </div>
+
+        <p class="text-pink-200 font-medium text-sm sm:text-base">
+          الأميرة الجذابة وذات الرداء الملكي تهدي الجميلة <strong>هنا</strong> وأصدقائها <strong>مكة ومنه</strong> أجمل الأغاني ومفاجأة خاصة! 👑💖
+        </p>
+        
+        <button id="btnReplayVoice" class="w-full bg-gradient-to-r from-pink-500 via-rose-600 to-purple-600 hover:from-pink-400 hover:to-purple-500 text-white font-bold py-3 px-4 rounded-xl shadow-lg flex items-center justify-center gap-2 border border-pink-300/40">
+          <i class="fas fa-volume-up text-lg"></i>
+          <span>إعادة الاستماع لتهنئة الأميرة 🔊</span>
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <script>
+    class SoundEffects {
+      constructor() {
+        this.ctx = null;
+      }
+
+      init() {
+        if (!this.ctx) {
+          this.ctx = new (window.AudioContext || window.webkitAudioContext)();
+        }
+      }
+
+      playPop() {
+        this.init();
+        if (this.ctx.state === 'suspended') this.ctx.resume();
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(400 + Math.random() * 300, this.ctx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(800 + Math.random() * 400, this.ctx.currentTime + 0.08);
+        gain.gain.setValueAtTime(0.3, this.ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.01, this.ctx.currentTime + 0.08);
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+        osc.start();
+        osc.stop(this.ctx.currentTime + 0.08);
+      }
+
+      playCashFanfare() {
+        this.init();
+        if (this.ctx.state === 'suspended') this.ctx.resume();
+        // Play rewarding coin/cash sequence
+        const freqs = [523.25, 659.25, 783.99, 1046.50, 1318.51, 1567.98];
+        freqs.forEach((freq, idx) => {
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          osc.type = 'triangle';
+          osc.frequency.setValueAtTime(freq, this.ctx.currentTime + idx * 0.06);
+          gain.gain.setValueAtTime(0.25, this.ctx.currentTime + idx * 0.06);
+          gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + idx * 0.06 + 0.3);
+          osc.connect(gain);
+          gain.connect(this.ctx.destination);
+          osc.start(this.ctx.currentTime + idx * 0.06);
+          osc.stop(this.ctx.currentTime + idx * 0.06 + 0.3);
+        });
+      }
+
+      playChime() {
+        this.init();
+        if (this.ctx.state === 'suspended') this.ctx.resume();
+        const notes = [523.25, 659.25, 783.99, 1046.50, 1318.51];
+        notes.forEach((freq, index) => {
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          osc.type = 'triangle';
+          osc.frequency.setValueAtTime(freq, this.ctx.currentTime + index * 0.08);
+          gain.gain.setValueAtTime(0, this.ctx.currentTime + index * 0.08);
+          gain.gain.linearRampToValueAtTime(0.2, this.ctx.currentTime + index * 0.08 + 0.02);
+          gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + index * 0.08 + 0.5);
+          osc.connect(gain);
+          gain.connect(this.ctx.destination);
+          osc.start(this.ctx.currentTime + index * 0.08);
+          osc.stop(this.ctx.currentTime + index * 0.08 + 0.5);
+        });
+      }
+    }
+
+    const soundFx = new SoundEffects();
+
+    function speakPrincessGreeting(customText) {
+      soundFx.playChime();
+      if ('speechSynthesis' in window) {
+        window.speechSynthesis.cancel(); // Stop ongoing speech
+        const textToSay = customText || "Happy Birthday Hana! Happy Birthday Maka and Mena!";
+        const utterance = new SpeechSynthesisUtterance(textToSay);
+        utterance.pitch = 1.6; // Princess pitch
+        utterance.rate = 0.9;
+        utterance.lang = 'en-US';
+
+        const voices = window.speechSynthesis.getVoices();
+        const femaleVoice = voices.find(v => v.lang.includes('en') && (v.name.includes('Female') || v.name.includes('Zira') || v.name.includes('Google') || v.name.includes('Samantha')));
+        if (femaleVoice) utterance.voice = femaleVoice;
+
+        window.speechSynthesis.speak(utterance);
+      }
+    }
+
+    /* Function to spawn floating 200 Egyptian Pound banknotes */
+    function spawn200EGPBills(startX, startY) {
+      soundFx.playCashFanfare();
+      const count = 25;
+      const cashBanner = document.getElementById('cashBanner');
+      const speech = document.getElementById('princessSpeech');
+
+      if (cashBanner) cashBanner.classList.remove('hidden');
+      if (speech) speech.innerText = "🎉 مبروك يا هنا! هديتك 400 جنيه مصري 💵✨";
+
+      for (let i = 0; i < count; i++) {
+        const bill = document.createElement('div');
+        bill.className = 'cash-bill';
+        
+        // Internal 200 EGP banknote HTML design
+        bill.innerHTML = `
+          <div class="flex justify-between items-center text-xs">
+            <span>200 LE</span>
+            <span>٢٠٠ ج.م</span>
+          </div>
+          <div class="text-center text-sm font-black tracking-widest my-auto">
+            200 جنيه
+          </div>
+          <div class="flex justify-between items-center text-[9px] opacity-90">
+            <span>البنك المركزي</span>
+            <span>💵 200</span>
+          </div>
+        `;
+
+        // Random offsets for trajectory
+        const angle = Math.random() * Math.PI * 2;
+        const dist = Math.random() * 280 + 100;
+        const tx = Math.cos(angle) * dist + 'px';
+        const ty = (Math.sin(angle) * dist - 180) + 'px';
+        const rot = (Math.random() * 360 - 180) + 'deg';
+
+        bill.style.left = (startX - 70) + 'px';
+        bill.style.top = (startY - 35) + 'px';
+        bill.style.setProperty('--tx', tx);
+        bill.style.setProperty('--ty', ty);
+        bill.style.setProperty('--rot', rot);
+        bill.style.animationDelay = (Math.random() * 0.3) + 's';
+
+        document.body.appendChild(bill);
+
+        setTimeout(() => {
+          bill.remove();
+        }, 2800);
+      }
+    }
+
+    const card = document.getElementById('mainCard');
+    
+    function handleMove(clientX, clientY) {
+      const rect = card.getBoundingClientRect();
+      const x = clientX - rect.left - rect.width / 2;
+      const y = clientY - rect.top - rect.height / 2;
+      const rotateX = (-y / rect.height) * 26;
+      const rotateY = (x / rect.width) * 26;
+      card.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+    }
+
+    window.addEventListener('mousemove', (e) => {
+      const rect = card.getBoundingClientRect();
+      if (e.clientX >= rect.left - 100 && e.clientX <= rect.right + 100 &&
+          e.clientY >= rect.top - 100 && e.clientY <= rect.bottom + 100) {
+        handleMove(e.clientX, e.clientY);
+      } else {
+        card.style.transform = `rotateX(0deg) rotateY(0deg)`;
+      }
+    });
+
+    window.addEventListener('touchmove', (e) => {
+      if (e.touches.length > 0) {
+        handleMove(e.touches[0].clientX, e.touches[0].clientY);
+      }
+    });
+
+    const confettiCanvas = document.getElementById('confetti-canvas');
+    const confettiCtx = confettiCanvas.getContext('2d');
+    let cWidth = confettiCanvas.width = window.innerWidth;
+    let cHeight = confettiCanvas.height = window.innerHeight;
+
+    window.addEventListener('resize', () => {
+      cWidth = confettiCanvas.width = window.innerWidth;
+      cHeight = confettiCanvas.height = window.innerHeight;
+      bWidth = balloonCanvas.width = window.innerWidth;
+      bHeight = balloonCanvas.height = window.innerHeight;
+    });
+
+    const confettiList = [];
+    const colors = ['#ff007f', '#7928ca', '#00dfd8', '#ffd700', '#ff4d4d', '#ffffff', '#ff99dd'];
+
+    class Confetti {
+      constructor() {
+        this.reset();
+      }
+
+      reset() {
+        this.x = Math.random() * cWidth;
+        this.y = Math.random() * -cHeight;
+        this.size = Math.random() * 9 + 5;
+        this.color = colors[Math.floor(Math.random() * colors.length)];
+        this.vy = Math.random() * 3.5 + 2;
+        this.vx = Math.random() * 2 - 1;
+        this.rotation = Math.random() * 360;
+        this.rotationSpeed = Math.random() * 8 - 4;
+        this.shape = Math.random() > 0.3 ? 'rect' : 'circle';
+      }
+
+      update() {
+        this.y += this.vy;
+        this.x += this.vx + Math.sin(this.y * 0.02);
+        this.rotation += this.rotationSpeed;
+        if (this.y > cHeight + 20) this.reset();
+      }
+
+      draw() {
+        confettiCtx.save();
+        confettiCtx.translate(this.x, this.y);
+        confettiCtx.rotate((this.rotation * Math.PI) / 180);
+        confettiCtx.fillStyle = this.color;
+        if (this.shape === 'rect') {
+          confettiCtx.fillRect(-this.size / 2, -this.size / 2, this.size, this.size * 1.5);
+        } else {
+          confettiCtx.beginPath();
+          confettiCtx.arc(0, 0, this.size / 2, 0, Math.PI * 2);
+          confettiCtx.fill();
+        }
+        confettiCtx.restore();
+      }
+    }
+
+    // Initialize initial confetti
+    for (let i = 0; i < 110; i++) {
+      confettiList.push(new Confetti());
+    }
+
+    function renderConfetti() {
+      confettiCtx.clearRect(0, 0, cWidth, cHeight);
+      confettiList.forEach(c => {
+        c.update();
+        c.draw();
+      });
+      requestAnimationFrame(renderConfetti);
+    }
+    renderConfetti();
+
+    const balloonCanvas = document.getElementById('balloon-canvas');
+    const balloonCtx = balloonCanvas.getContext('2d');
+    let bWidth = balloonCanvas.width = window.innerWidth;
+    let bHeight = balloonCanvas.height = window.innerHeight;
+
+    const balloonList = [];
+
+    class Balloon {
+      constructor() {
+        this.reset();
+      }
+
+      reset() {
+        this.radius = Math.random() * 18 + 22; // Balloon size
+        this.x = Math.random() * (bWidth - this.radius * 2) + this.radius;
+        this.y = bHeight + this.radius + Math.random() * 200;
+        this.speed = Math.random() * 1.5 + 1.2;
+        this.color = colors[Math.floor(Math.random() * colors.length)];
+        this.swing = Math.random() * 2;
+        this.swingSpeed = Math.random() * 0.03 + 0.01;
+        this.angle = Math.random() * Math.PI * 2;
+      }
+
+      update() {
+        this.y -= this.speed;
+        this.angle += this.swingSpeed;
+        this.x += Math.sin(this.angle) * this.swing;
+
+        if (this.y < -this.radius * 2) {
+          this.reset();
+        }
+      }
+
+      draw() {
+        balloonCtx.save();
+        
+        // Balloon String
+        balloonCtx.beginPath();
+        balloonCtx.moveTo(this.x, this.y + this.radius);
+        balloonCtx.quadraticCurveTo(
+          this.x + Math.sin(this.angle) * 15,
+          this.y + this.radius + 25,
+          this.x,
+          this.y + this.radius + 45
+        );
+        balloonCtx.strokeStyle = 'rgba(255, 255, 255, 0.5)';
+        balloonCtx.lineWidth = 1.8;
+        balloonCtx.stroke();
+
+        // Balloon Body
+        balloonCtx.beginPath();
+        balloonCtx.ellipse(this.x, this.y, this.radius, this.radius * 1.25, 0, 0, Math.PI * 2);
+        balloonCtx.fillStyle = this.color;
+        balloonCtx.fill();
+
+        // Balloon Highlight Shine
+        balloonCtx.beginPath();
+        balloonCtx.ellipse(this.x - this.radius * 0.35, this.y - this.radius * 0.4, this.radius * 0.25, this.radius * 0.4, -Math.PI / 4, 0, Math.PI * 2);
+        balloonCtx.fillStyle = 'rgba(255, 255, 255, 0.45)';
+        balloonCtx.fill();
+
+        // Balloon Knot
+        balloonCtx.beginPath();
+        balloonCtx.arc(this.x, this.y + this.radius * 1.22, 4, 0, Math.PI * 2);
+        balloonCtx.fillStyle = this.color;
+        balloonCtx.fill();
+
+        balloonCtx.restore();
+      }
+
+      isClicked(mx, my) {
+        const dx = mx - this.x;
+        const dy = my - this.y;
+        return (dx * dx + dy * dy) <= (this.radius * this.radius * 1.4);
+      }
+    }
+
+    // Spawn Initial Balloons
+    for (let i = 0; i < 18; i++) {
+      balloonList.push(new Balloon());
+    }
+
+    function renderBalloons() {
+      balloonCtx.clearRect(0, 0, bWidth, bHeight);
+      balloonList.forEach(b => {
+        b.update();
+        b.draw();
+      });
+      requestAnimationFrame(renderBalloons);
+    }
+    renderBalloons();
+
+    // Pop balloons on click/tap!
+    balloonCanvas.addEventListener('click', (e) => {
+      const rect = balloonCanvas.getBoundingClientRect();
+      const mx = e.clientX - rect.left;
+      const my = e.clientY - rect.top;
+
+      for (let i = balloonList.length - 1; i >= 0; i--) {
+        if (balloonList[i].isClicked(mx, my)) {
+          soundFx.playPop();
+          // Burst small confetti at balloon location
+          for (let k = 0; k < 12; k++) {
+            const extra = new Confetti();
+            extra.x = mx;
+            extra.y = my;
+            extra.vy = Math.random() * 6 - 3;
+            extra.vx = Math.random() * 6 - 3;
+            confettiList.push(extra);
+          }
+          balloonList[i].reset();
+          break;
+        }
+      }
+    });
+
+    
+    // Button 2: Spawn More Balloons & Confetti
+    const btnMoreFun = document.getElementById('btnMoreFun');
+    btnMoreFun.addEventListener('click', () => {
+      soundFx.playPop();
+      
+      // Add 20 extra balloons
+      for (let i = 0; i < 20; i++) {
+        balloonList.push(new Balloon());
+      }
+
+      // Add 80 extra confetti particles
+      for (let i = 0; i < 80; i++) {
+        confettiList.push(new Confetti());
+      }
+    });
+
+    // Button 3: Show Princess Surprise Modal
+    const btnPrincessSurprise = document.getElementById('btnPrincessSurprise');
+    const princessModal = document.getElementById('princessModal');
+    const btnClosePrincess = document.getElementById('btnClosePrincess');
+    const btnReplayVoice = document.getElementById('btnReplayVoice');
+
+    btnPrincessSurprise.addEventListener('click', () => {
+      princessModal.classList.add('active');
+      speakPrincessGreeting();
+      
+      // Trigger extra magic confetti burst
+      for (let i = 0; i < 50; i++) {
+        confettiList.push(new Confetti());
+      }
+    });
+
+    const interactiveGiftBox = document.getElementById('interactiveGiftBox');
+    if (interactiveGiftBox) {
+      interactiveGiftBox.addEventListener('click', (e) => {
+        const rect = interactiveGiftBox.getBoundingClientRect();
+        const clickX = rect.left + rect.width / 2;
+        const clickY = rect.top + rect.height / 2;
+        spawn200EGPBills(clickX, clickY);
+        speakPrincessGreeting("Congratulations Hana! You got two hundred Egyptian Pounds!");
+      });
+    }
+
+    btnClosePrincess.addEventListener('click', () => {
+      princessModal.classList.remove('active');
+      if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+    });
+
+    btnReplayVoice.addEventListener('click', () => {
+      speakPrincessGreeting();
+    });
+
+    // Close Modal on backdrop click
+    princessModal.addEventListener('click', (e) => {
+      if (e.target === princessModal) {
+        princessModal.classList.remove('active');
+        if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+      }
+    });
+  </script>
+</body>
+</html>
